@@ -3,6 +3,7 @@ package com.blogmaker.blog.controller;
 import com.blogmaker.blog.dtos.UserDTO;
 import com.blogmaker.blog.entity.User;
 import com.blogmaker.blog.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
        return userService.createUser(user);
     }
 

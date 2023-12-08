@@ -1,6 +1,8 @@
 package com.blogmaker.blog.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,17 +18,20 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String userName;
 
+    @NotNull
     private String authority;
 
+    @NotNull
     private String password;
 
+    @Email
     private String email;
-
     
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<Post> posts;
