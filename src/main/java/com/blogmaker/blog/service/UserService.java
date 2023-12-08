@@ -1,19 +1,16 @@
 package com.blogmaker.blog.service;
 
-
 import com.blogmaker.blog.dtos.UserDTO;
 import com.blogmaker.blog.entity.User;
 import com.blogmaker.blog.exception.ResourceNotFoundException;
 import com.blogmaker.blog.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -26,7 +23,6 @@ public class UserService {
     }
 
     public ResponseEntity<User> findUserById(Long userId) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found"));
         return new ResponseEntity<>(user, HttpStatus.OK);
