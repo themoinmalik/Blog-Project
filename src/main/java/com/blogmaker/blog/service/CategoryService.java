@@ -19,7 +19,7 @@ public interface CategoryService {
 
 
     // get all
-    List<CategoryDTO> getAllCategories();
+    List<Category> getAllCategories();
 
 
     // delete...

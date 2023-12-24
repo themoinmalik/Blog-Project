@@ -21,17 +21,20 @@ public class Post {
     private Long id;
 
     private String title;
-    @Lob
+
     private String content;
 
     private LocalDate createdOn;
 
     private LocalDate updatedOn;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "post", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.DETACH}, fetch = FetchType.LAZY)
+    private Category category;
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
 

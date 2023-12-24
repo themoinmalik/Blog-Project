@@ -38,9 +38,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long Id) {
         Category category = categoryRepo.findById(Id).orElseThrow( () -> new ResourceNotFoundException("There is no Category for this Id"));
-        categoryDTO.setTitle(category.getTitle());
-        category.setDescription(category.getDescription());
+        category.setTitle(categoryDTO.getTitle());
+        category.setDescription(categoryDTO.getDescription());
         category.setId(Id);
+        categoryRepo.save(category);
         return categoryDTO;
     }
 
@@ -50,8 +51,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDTO> getAllCategories() {
-        return null;
+    public List<Category> getAllCategories() {
+        return categoryRepo.findAll();
     }
 
     @Override
@@ -63,7 +64,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<CategoryDTO> findById(Long catId) {
-        Optional<Category> category = categoryRepo.findById(catId);
+        Category category = categoryRepo.findById(catId).orElseThrow(
+                () -> new ResourceNotFoundException("Not Found"));
         CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
         return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
     }
