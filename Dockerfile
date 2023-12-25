@@ -1,6 +1,6 @@
 
 
-FROM openjdk:11-jdk-alpine as build
+FROM openjdk:11-jdk-alpine AS build
 
 WORKDIR /app
 

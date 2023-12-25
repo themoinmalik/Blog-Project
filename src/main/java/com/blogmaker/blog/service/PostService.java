@@ -10,13 +10,13 @@ import java.util.List;
 public interface PostService {
 
 
-    ResponseEntity<Post> createPost(PostDTO postDTO);
+    ResponseEntity<PostDTO> createPost(Long userId, Long catId, PostDTO postDTO);
 
-    ResponseEntity<Post> getPostById(Long id);
+    ResponseEntity<List<Post>> getPostByUserId(Long userId);
 
     ResponseEntity<List<Post>> getAllPosts();
 
-    ResponseEntity<Post> updatePostById(Long id, PostDTO postDTO);
+    ResponseEntity<PostDTO> updatePostById(Long id, PostDTO postDTO);
 
     ResponseEntity<?> deletePostById(Long id);
 }
