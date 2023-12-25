@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-//                 git 'https://github.com/themoinmalik/Blog-Project.git'
                 sh 'javac BlogApplication.java'
             }
 
