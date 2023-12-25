@@ -6,15 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
-@Entity(name = "posts")
+@Entity(name = "Categories")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
-public class Post {
+@Getter
+public class Category {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,21 +22,10 @@ public class Post {
 
     private String title;
 
-    private String content;
-
-    private LocalDate createdOn;
-
-    private LocalDate updatedOn;
-
-    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
-    private User user;
-
-    @ManyToOne(cascade = {CascadeType.DETACH}, fetch = FetchType.LAZY)
-    private Category category;
+    private String description;
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    private List<Comment> comments;
-
+    private List<Post> posts;
 
 
 }
