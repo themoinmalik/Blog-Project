@@ -1,8 +1,6 @@
 package com.blogmaker.blog.dtos;
 
 
-import com.blogmaker.blog.entity.Category;
-import com.blogmaker.blog.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +16,8 @@ public class PostDTO {
 
     private String content;
 
-    private Category category;
+    private Long userId;
+
+    private Long categoryId;
 
 }

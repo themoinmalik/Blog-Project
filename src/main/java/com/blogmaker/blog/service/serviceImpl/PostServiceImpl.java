@@ -2,10 +2,15 @@ package com.blogmaker.blog.service.serviceImpl;
 
 
 import com.blogmaker.blog.dtos.PostDTO;
+import com.blogmaker.blog.entity.Category;
 import com.blogmaker.blog.entity.Post;
+import com.blogmaker.blog.entity.User;
 import com.blogmaker.blog.exception.ResourceNotFoundException;
+import com.blogmaker.blog.repository.CategoryRepo;
 import com.blogmaker.blog.repository.PostRepo;
+import com.blogmaker.blog.repository.UserRepository;
 import com.blogmaker.blog.service.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,32 +23,43 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepo postRepo;
 
+    private final UserRepository userRepository;
 
-    public PostServiceImpl(PostRepo postRepo) {
+    private final CategoryRepo categoryRepo;
+
+    @Autowired
+    public PostServiceImpl(PostRepo postRepo, UserRepository userRepository, CategoryRepo categoryRepo) {
         this.postRepo = postRepo;
+        this.userRepository = userRepository;
+        this.categoryRepo = categoryRepo;
     }
 
     @Override
-    public ResponseEntity<Post> createPost(PostDTO postDTO) {
+    public ResponseEntity<PostDTO> createPost(Long userId, Long catId, PostDTO postDTO) {
 
         Post post = new Post();
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
         post.setCreatedOn(LocalDate.now());
         post.setUpdatedOn(LocalDate.now());
-        post.setCategory(postDTO.getCategory());
-
+        User user = userRepository.findById(userId).orElseThrow(
+                ()-> new ResourceNotFoundException("No User found for this Id.")
+        );
+        post.setUser(user);
+        Category category = categoryRepo.findById(catId).orElseThrow(
+                ()-> new ResourceNotFoundException("Category not found")
+        );
+        post.setCategory(category);
         postRepo.save(post);
-
-        return new ResponseEntity<>(post, HttpStatus.CREATED);
+        postDTO.setUserId(userId);
+        postDTO.setCategoryId(catId);
+        return new ResponseEntity<>(postDTO, HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Post> getPostById(Long Id) {
-        Post post = postRepo.findById(Id).orElseThrow(
-                ()-> new ResourceNotFoundException("Not Found")
-        );
-        return new ResponseEntity<>(post, HttpStatus.OK);
+    public ResponseEntity<List<Post>> getPostByUserId(Long userId) {
+        List<Post> post = postRepo.findByUserId(userId);
+    return new ResponseEntity<>(post, HttpStatus.OK);
 
     }
 
@@ -54,16 +70,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<Post> updatePostById(Long id, PostDTO postDto) {
+    public ResponseEntity<PostDTO> updatePostById(Long id, PostDTO postDto) {
         Post post = postRepo.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Not Found")
         );
         post.setTitle(postDto.getTitle());
         post.setUpdatedOn(LocalDate.now());
         post.setContent(postDto.getContent());
-
         postRepo.save(post);
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        postDto.setUserId(post.getUser().getId());
+        postDto.setCategoryId(post.getCategory().getId());
+        return new ResponseEntity<>(postDto, HttpStatus.OK);
     }
 
     @Override
