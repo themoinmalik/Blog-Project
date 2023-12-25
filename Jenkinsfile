@@ -1,15 +1,11 @@
 pipeline {
     agent any
 
-    tools {
-        maven "M3"
-    }
-
     stages {
         stage('Build') {
             steps {
                 git 'https://github.com/themoinmalik/Blog-Project.git'
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+                sh 'javac BlogApplication.java'
             }
 
             post {
