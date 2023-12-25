@@ -1,11 +1,12 @@
 pipeline {
     agent any
 
+    maven 'maven-4.0.0'
+
     stages {
         stage('Build') {
             steps {
-//                 git 'https://github.com/themoinmalik/Blog-Project.git'
-                sh 'javac BlogApplication.java'
+                sh 'mvn clean'
             }
 
             post {
@@ -15,5 +16,7 @@ pipeline {
                 }
             }
         }
+
+
     }
 }
