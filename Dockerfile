@@ -1,32 +1,10 @@
 
+FROM openjdk:17-jdk-alpine AS build
 
-FROM openjdk:11-jdk-alpine AS build
+VOLUME /tmp
 
-WORKDIR /app
+ARG JAR_FILE
 
-COPY mvnw .
-COPY .mvn .mvn
+COPY ${JAR_FILE} app.jar
 
-COPY pom.xml .
-
-
-RUN ./mvnw dependency:go-offline -B
-
-
-COPY src src
-
-
-RUN ./mvnw package -DskipTests
-RUN mkdir -p target/dependecy && (cd target/dependency; jar -xf ../*.jar)
-
-
-FROM openjdk:8-jre-alpine
-
-ARG DEPENDENCY=/app/target/dependency
-
-
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDECY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDECY}/BOOT-INF/classes /app
-
-ENTRYPOINT ["java", "-cp", "app:app/lib/*", "com.blogmaker.blog.BlogMakerApplication"]
+ENTRYPOINT ["java","-jar","/app.jar"]
