@@ -12,9 +12,9 @@ public interface PostService {
 
     ResponseEntity<PostDTO> createPost(Long userId, Long catId, PostDTO postDTO);
 
-    ResponseEntity<List<Post>> getPostByUserId(Long userId);
+    ResponseEntity<List<PostDTO>> getPostByUserId(Long userId);
 
-    ResponseEntity<List<Post>> getAllPosts();
+    ResponseEntity<List<PostDTO>> getAllPosts(Integer pageNum, Integer pageSize);
 
     ResponseEntity<PostDTO> updatePostById(Long id, PostDTO postDTO);
 

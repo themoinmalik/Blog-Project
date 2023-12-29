@@ -10,13 +10,19 @@ import com.blogmaker.blog.repository.CategoryRepo;
 import com.blogmaker.blog.repository.PostRepo;
 import com.blogmaker.blog.repository.UserRepository;
 import com.blogmaker.blog.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -27,11 +33,14 @@ public class PostServiceImpl implements PostService {
 
     private final CategoryRepo categoryRepo;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public PostServiceImpl(PostRepo postRepo, UserRepository userRepository, CategoryRepo categoryRepo) {
+    public PostServiceImpl(PostRepo postRepo, UserRepository userRepository, CategoryRepo categoryRepo, ModelMapper modelMapper) {
         this.postRepo = postRepo;
         this.userRepository = userRepository;
         this.categoryRepo = categoryRepo;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -57,16 +66,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<List<Post>> getPostByUserId(Long userId) {
-        List<Post> post = postRepo.findByUserId(userId);
-    return new ResponseEntity<>(post, HttpStatus.OK);
+    public ResponseEntity<List<PostDTO>> getPostByUserId(Long userId) {
+
+        List<Post> posts = postRepo.findByUserId(userId);
+        List<PostDTO> postDTOS = posts.stream().map(
+                post-> modelMapper.map(post,PostDTO.class)
+        ).collect(Collectors.toList());
+    return new ResponseEntity<>(postDTOS, HttpStatus.OK);
 
     }
 
     @Override
-    public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postRepo.findAll();
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+    public ResponseEntity<List<PostDTO>> getAllPosts(Integer pageNum, Integer pageSize) {
+        // make posts [pageable..
+
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Post> postPage = postRepo.findAll(pageable);
+        List<Post> posts = postPage.getContent();
+        List<PostDTO> postDTOS = posts.stream().map(
+                post -> modelMapper.map(post, PostDTO.class)
+        ).collect(Collectors.toList());
+        return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
     @Override
