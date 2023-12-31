@@ -16,6 +16,8 @@ public class PostDTO {
 
     private String content;
 
+    private String imageName;
+
     private Long userId;
 
     private Long categoryId;
