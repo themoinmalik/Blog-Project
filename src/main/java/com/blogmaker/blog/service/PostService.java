@@ -14,7 +14,9 @@ public interface PostService {
 
     ResponseEntity<List<PostDTO>> getPostByUserId(Long userId);
 
-    ResponseEntity<List<PostDTO>> getAllPosts(Integer pageNum, Integer pageSize);
+    ResponseEntity<List<PostDTO>> getAllPosts(Integer pageNum, Integer pageSize, String sortBy);
+
+    ResponseEntity<PostDTO> getPostById(Long postId);
 
     ResponseEntity<PostDTO> updatePostById(Long id, PostDTO postDTO);
 

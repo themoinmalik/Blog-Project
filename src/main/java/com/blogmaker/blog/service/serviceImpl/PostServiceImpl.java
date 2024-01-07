@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -77,16 +78,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<List<PostDTO>> getAllPosts(Integer pageNum, Integer pageSize) {
+    public ResponseEntity<List<PostDTO>> getAllPosts(Integer pageNum, Integer pageSize, String sortBy) {
         // make posts [pageable..
 
-        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Pageable pageable = PageRequest.of(pageNum,pageSize, Sort.by(sortBy));
         Page<Post> postPage = postRepo.findAll(pageable);
         List<Post> posts = postPage.getContent();
         List<PostDTO> postDTOS = posts.stream().map(
                 post -> modelMapper.map(post, PostDTO.class)
         ).collect(Collectors.toList());
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PostDTO> getPostById(Long postId) {
+        Post post = postRepo.findById(postId).orElseThrow(
+                ()-> new ResourceNotFoundException("no post found")
+        );
+        PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+        return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
     @Override
